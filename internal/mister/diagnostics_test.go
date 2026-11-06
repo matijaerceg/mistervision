@@ -94,10 +94,11 @@ func settingsLog(t *testing.T, source io.Reader) string {
 	return string(data)
 }
 
-func TestConsoleModeINISettingsAreAllowlisted(t *testing.T) {
+func TestKnownHostINISettingsAreAllowlisted(t *testing.T) {
 	data := settingsLog(t, strings.NewReader(`[Menu]
 vga_mode=cvbs
 main=ConsoleMode/MiSTer_ConsoleMode
+main=zaparoo/MiSTer_Zaparoo
 fb_terminal=1
 fb_size=1
 [MiSTerVisionFramebuffer]
@@ -109,7 +110,7 @@ main=secret-host
 	if strings.Contains(data, "secret") {
 		t.Fatal(data)
 	}
-	for _, want := range []string{`"value":"cvbs"`, `"value":"ConsoleMode/MiSTer_ConsoleMode"`, `"section":"mistervisionframebuffer"`, `"key":"fb_terminal"`, `"key":"log_file_entry"`, `"rejected_values":2`} {
+	for _, want := range []string{`"value":"cvbs"`, `"value":"ConsoleMode/MiSTer_ConsoleMode"`, `"value":"zaparoo/MiSTer_Zaparoo"`, `"section":"mistervisionframebuffer"`, `"key":"fb_terminal"`, `"key":"log_file_entry"`, `"rejected_values":2`} {
 		if !strings.Contains(data, want) {
 			t.Fatalf("missing %s: %s", want, data)
 		}
