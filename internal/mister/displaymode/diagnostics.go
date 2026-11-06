@@ -42,7 +42,7 @@ func recordState(log *diagnostics.Log, stage, root string) {
 			vt = n
 		}
 	}
-	log.Record("mister.state", slog.String("stage", stage), slog.Bool("standard_host", processRunning(proc, "MiSTer")), slog.Bool("consolemode_host", processRunning(proc, consoleModeHost)), slog.Bool("consolemode_frontend", processRunning(proc, "ConsoleMode_arm")), slog.String("core", core), slog.Int("active_vt", vt))
+	log.Record("mister.state", slog.String("stage", stage), slog.Bool("standard_host", processRunning(proc, "MiSTer")), slog.Bool("zaparoo_host", processRunning(proc, "MiSTer_Zaparoo")), slog.Bool("consolemode_host", processRunning(proc, consoleModeHost)), slog.Bool("consolemode_frontend", processRunning(proc, "ConsoleMode_arm")), slog.String("core", core), slog.Int("active_vt", vt))
 	if data, err := readObservation(filepath.Join(root, "sys/module/MiSTer_fb/parameters/mode"), 128); err == nil {
 		var format, swap, w, h, stride int
 		if n, e := fmt.Sscanf(string(data), "%d %d %d %d %d", &format, &swap, &w, &h, &stride); e == nil && n == 5 {

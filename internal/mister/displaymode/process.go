@@ -85,7 +85,13 @@ func stopMain(ctx context.Context) (int, error) {
 
 // findMain refuses ambiguous ownership rather than stopping an unrelated process.
 func findMain() (int, error) {
-	entries, err := os.ReadDir("/proc")
+	return findMainIn("/proc")
+}
+
+// findMainIn reads process identity from root so ownership checks can be tested
+// without signaling or inspecting the development machine's processes.
+func findMainIn(root string) (int, error) {
+	entries, err := os.ReadDir(root)
 	if err != nil {
 		return 0, err
 	}
@@ -95,13 +101,13 @@ func findMain() (int, error) {
 		if e != nil {
 			continue
 		}
-		name, _ := os.ReadFile(filepath.Join("/proc", entry.Name(), "comm"))
-		executable, _ := os.Readlink(filepath.Join("/proc", entry.Name(), "exe"))
+		name, _ := os.ReadFile(filepath.Join(root, entry.Name(), "comm"))
+		executable, _ := os.Readlink(filepath.Join(root, entry.Name(), "exe"))
 		if !isMainProcess(strings.TrimSpace(string(name)), executable) {
 			continue
 		}
-		status, _ := os.ReadFile(filepath.Join("/proc", entry.Name(), "status"))
-		if strings.Contains(string(status), "State:\tZ") || strings.Contains(string(status), "State:\tX") {
+		status, err := os.ReadFile(filepath.Join(root, entry.Name(), "status"))
+		if err != nil || strings.Contains(string(status), "State:\tZ") || strings.Contains(string(status), "State:\tX") {
 			continue
 		}
 		if pid != 0 {
@@ -133,8 +139,8 @@ func waitStopped(ctx context.Context, pid int) error {
 	}
 }
 
-// isMainProcess recognizes the standard host and the reporter's Physical Disc
-// variant by exact executable path. A truncated process name alone is ambiguous.
+// isMainProcess recognizes standard Main and supported replacement hosts.
+// Replacement hosts require an exact executable path, not just a process name.
 func isMainProcess(name, executable string) bool {
-	return name == "MiSTer" || executable == "/media/fat/MiSTer_Physical-CD"
+	return name == "MiSTer" || executable == "/media/fat/MiSTer_Physical-CD" || executable == "/media/fat/zaparoo/MiSTer_Zaparoo"
 }

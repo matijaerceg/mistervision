@@ -19,7 +19,8 @@ func TestStateLogAllowlist(t *testing.T) {
 		"media/fat/config/consolemode_crt.bin":        string([]byte{1}),
 		"media/fat/config/consolemode_video_mode.bin": string([]byte{2, 0, 0, 0}),
 		"media/fat/config/consolemode_rotation.bin":   "secret-oversized-setting",
-		"proc/42/comm":                                consoleModeHost + "\n", "proc/42/status": "State:\tS (sleeping)\n",
+		"proc/43/comm":                                "MiSTer_Zaparoo\n", "proc/43/status": "State:\tS (sleeping)\n",
+		"proc/42/comm": consoleModeHost + "\n", "proc/42/status": "State:\tS (sleeping)\n",
 	}
 	for name, data := range files {
 		path := filepath.Join(root, name)
@@ -60,7 +61,7 @@ func TestStateLogAllowlist(t *testing.T) {
 	if len(events) != 5 {
 		t.Fatalf("unexpected events: %s", text)
 	}
-	if events[0]["core"] != "other" || events[0]["consolemode_host"] != true || events[0]["active_vt"] != float64(3) {
+	if events[0]["core"] != "other" || events[0]["consolemode_host"] != true || events[0]["zaparoo_host"] != true || events[0]["active_vt"] != float64(3) {
 		t.Fatal(events[0])
 	}
 	if events[1]["width"] != float64(640) || events[1]["height"] != float64(240) {

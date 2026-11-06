@@ -96,7 +96,7 @@ func recordSettings(log *diagnostics.Log, source io.Reader) {
 				continue
 			}
 		case "main":
-			if value != "MiSTer" && value != "ConsoleMode/MiSTer_ConsoleMode" {
+			if value != "MiSTer" && value != "ConsoleMode/MiSTer_ConsoleMode" && value != "zaparoo/MiSTer_Zaparoo" {
 				rejected++
 				continue
 			}
