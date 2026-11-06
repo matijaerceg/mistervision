@@ -152,6 +152,8 @@ The scoped section inherits RGB/component and PAL/NTSC settings. Both RGB and co
 
 The supervisor waits for the expected framebuffer, manages console modes, and pauses Main while the child owns hardware. It stops orphaned decoders, restores consoles, and resumes Main. The Scripts launcher reloads the menu after successful exit in either mode. The supervisor reloads the menu after a failure, before an update restart, or when run without the launcher.
 
+Zaparoo Frontend uses `/media/fat/zaparoo/MiSTer_Zaparoo` as its MiSTer host. Progressive output pauses that host for display ownership and resumes it before reloading the menu. Interlaced output selects standard `MiSTer` through its scoped INI section. Startup diagnostics include `zaparoo_host` and the known `main=zaparoo/MiSTer_Zaparoo` INI value. Automated checks cover host recognition and ambiguous ownership. Startup and return to the Zaparoo frontend still need hardware validation.
+
 A display lock prevents two supervisors. SIGKILL of the supervisor bypasses cleanup and can require restarting MiSTer. [Supervisor logs](GO_DIAGNOSTICS.md) help diagnose failed handoffs.
 
 Native output requires a kernel with working framebuffer mapping and VSync support. Early MiSTer Linux 6.18 builds omitted framebuffer callbacks and failed with `mmap framebuffer: No such device`. That failure requires the [kernel callback fix](https://github.com/MiSTer-devel/Linux-Kernel_MiSTer/commit/ea2212221ad137cf26bf5caa7ad3dab7216435a6), not an application setting.
